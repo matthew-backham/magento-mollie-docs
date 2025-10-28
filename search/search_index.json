@@ -1,0 +1,1 @@
+{"config":{"lang":["en"],"separator":"[\\s\\-]+","pipeline":["stopWordFilter"]},"docs":[{"location":"","title":"Mollie Magento 2 \u2014 Auto-Generated API Calls","text":"<p>Generated automatically from the Mollie Magento 2 plugin source.</p> Endpoint <code>/v2/orders-api/cancel-order</code>"}]}
