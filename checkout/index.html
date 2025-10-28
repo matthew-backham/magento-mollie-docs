@@ -75,7 +75,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#magento-mollie-checkout-flow" class="md-skip">
+        <a href="#magento-mollie-checkout-flow-deep-analysis" class="md-skip">
           Skip to content
         </a>
       
@@ -305,9 +305,9 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#likely-checkout-related-events" class="md-nav__link">
+  <a href="#checkout-related-events" class="md-nav__link">
     <span class="md-ellipsis">
-      Likely checkout-related events
+      Checkout-related events
     </span>
   </a>
   
@@ -355,9 +355,10 @@
 
 
 
-<h1 id="magento-mollie-checkout-flow">Magento × Mollie — Checkout Flow<a class="headerlink" href="#magento-mollie-checkout-flow" title="Permanent link">&para;</a></h1>
-<p>This page is generated from the Mollie Magento 2 module source. It maps <strong>Magento events → Mollie observers → Mollie API calls</strong> detected in code.</p>
-<h2 id="likely-checkout-related-events">Likely checkout-related events<a class="headerlink" href="#likely-checkout-related-events" title="Permanent link">&para;</a></h2>
+<h1 id="magento-mollie-checkout-flow-deep-analysis">Magento × Mollie — Checkout Flow (Deep Analysis)<a class="headerlink" href="#magento-mollie-checkout-flow-deep-analysis" title="Permanent link">&para;</a></h1>
+<p>Generated automatically from the Mollie Magento 2 module source.</p>
+<p>It maps <strong>Magento events → Mollie observers → Service classes → Mollie API calls</strong>.</p>
+<h2 id="checkout-related-events">Checkout-related events<a class="headerlink" href="#checkout-related-events" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -375,6 +376,10 @@
 <td>Mollie\Payment\Observer\AdminhtmlSalesOrderCreateProcessItemBefore\SetPurchaseTypeOnCreateOrderItem</td>
 </tr>
 <tr>
+<td><code>backend_block_widget_grid_prepare_grid_before</code></td>
+<td>Mollie\Payment\Observer\BackendBlockWidgetGridPrepareGridBefore\AddAdditionalInformationToCollection</td>
+</tr>
+<tr>
 <td><code>checkout_allow_guest</code></td>
 <td>Mollie\Payment\Observer\CheckoutAllowGuest\ForceCustomerLoginWhenSubscriptionItemInCart</td>
 </tr>
@@ -385,6 +390,18 @@
 <tr>
 <td><code>controller_action_predispatch_checkout_index_index</code></td>
 <td>Mollie\Payment\Observer\ControllerActionPredispatchCheckoutIndexIndex\RestoreQuoteOfUnsuccessfulPayment</td>
+</tr>
+<tr>
+<td><code>mollie_process_transaction_end</code></td>
+<td>Mollie\Payment\Observer\MollieProcessTransactionEnd\RemoveCompletedOrdersFromPendingPaymentTable</td>
+</tr>
+<tr>
+<td><code>mollie_start_transaction</code></td>
+<td>Mollie\Payment\Observer\MollieStartTransaction\SavePendingOrder</td>
+</tr>
+<tr>
+<td><code>order_cancel_after</code></td>
+<td>Mollie\Payment\Observer\OrderCancelAfter</td>
 </tr>
 <tr>
 <td><code>sales_model_service_quote_submit_before</code></td>
@@ -442,91 +459,95 @@
 <td><code>sales_quote_save_before</code></td>
 <td>Mollie\Payment\Observer\SalesQuoteSaveBefore\SetPaymentFeeDataOnQuote</td>
 </tr>
+<tr>
+<td><code>shortcut_buttons_container</code></td>
+<td>Mollie\Payment\Observer\ShortcutButtonsContainer\AddApplePayShortcutButton</td>
+</tr>
 </tbody>
 </table>
 <h2 id="full-event-observer-api-map">Full event → observer → API map<a class="headerlink" href="#full-event-observer-api-map" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code>flowchart TD
   mollie_payment_observer_configobserver([&quot;Mollie\Payment\Observer\ConfigObserver&quot;]):::observer
   admin_system_config_changed_section_mollie_payment_methods([&quot;Magento event: &lt;br/&gt;&lt;code&gt;admin_system_config_changed_section_mollie_payment_methods&lt;/code&gt;&quot;]):::event
+  admin_system_config_changed_section_mollie_payment_methods --&gt; mollie_payment_observer_configobserver
   mollie_payment_observer_ordercancelafter([&quot;Mollie\Payment\Observer\OrderCancelAfter&quot;]):::observer
   order_cancel_after([&quot;Magento event: &lt;br/&gt;&lt;code&gt;order_cancel_after&lt;/code&gt;&quot;]):::event
+  order_cancel_after --&gt; mollie_payment_observer_ordercancelafter
   mollie_payment_observer_lockunlockorder([&quot;Mollie\Payment\Observer\LockUnlockOrder&quot;]):::observer
   sales_order_shipment_save_before([&quot;Magento event: &lt;br/&gt;&lt;code&gt;sales_order_shipment_save_before&lt;/code&gt;&quot;]):::event
+  sales_order_shipment_save_before --&gt; mollie_payment_observer_lockunlockorder
   sales_order_shipment_save_after([&quot;Magento event: &lt;br/&gt;&lt;code&gt;sales_order_shipment_save_after&lt;/code&gt;&quot;]):::event
+  sales_order_shipment_save_after --&gt; mollie_payment_observer_lockunlockorder
   sales_order_shipment_track_save_before([&quot;Magento event: &lt;br/&gt;&lt;code&gt;sales_order_shipment_track_save_before&lt;/code&gt;&quot;]):::event
+  sales_order_shipment_track_save_before --&gt; mollie_payment_observer_lockunlockorder
   sales_order_shipment_track_save_after([&quot;Magento event: &lt;br/&gt;&lt;code&gt;sales_order_shipment_track_save_after&lt;/code&gt;&quot;]):::event
+  sales_order_shipment_track_save_after --&gt; mollie_payment_observer_lockunlockorder
   mollie_payment_observer_salesordershipmentsavebefore_createmollieshipment([&quot;Mollie\Payment\Observer\SalesOrderShipmentSaveBefore\CreateMollieShipment&quot;]):::observer
-  sales_order_shipment_save_before_2([&quot;Magento event: &lt;br/&gt;&lt;code&gt;sales_order_shipment_save_before&lt;/code&gt;&quot;]):::event
+  sales_order_shipment_save_before([&quot;Magento event: &lt;br/&gt;&lt;code&gt;sales_order_shipment_save_before&lt;/code&gt;&quot;]):::event
+  sales_order_shipment_save_before --&gt; mollie_payment_observer_salesordershipmentsavebefore_createmollieshipment
   mollie_payment_observer_salesordershipmenttracksaveafter([&quot;Mollie\Payment\Observer\SalesOrderShipmentTrackSaveAfter&quot;]):::observer
-  sales_order_shipment_track_save_after_2([&quot;Magento event: &lt;br/&gt;&lt;code&gt;sales_order_shipment_track_save_after&lt;/code&gt;&quot;]):::event
+  sales_order_shipment_track_save_after([&quot;Magento event: &lt;br/&gt;&lt;code&gt;sales_order_shipment_track_save_after&lt;/code&gt;&quot;]):::event
+  sales_order_shipment_track_save_after --&gt; mollie_payment_observer_salesordershipmenttracksaveafter
   mollie_payment_observer_salesordercreditmemosaveafter([&quot;Mollie\Payment\Observer\SalesOrderCreditmemoSaveAfter&quot;]):::observer
   sales_order_creditmemo_save_after([&quot;Magento event: &lt;br/&gt;&lt;code&gt;sales_order_creditmemo_save_after&lt;/code&gt;&quot;]):::event
+  sales_order_creditmemo_save_after --&gt; mollie_payment_observer_salesordercreditmemosaveafter
   mollie_payment_observer_salesmodelservicequotesubmitbefore_copypaymentfeetoorder([&quot;Mollie\Payment\Observer\SalesModelServiceQuoteSubmitBefore\CopyPaymentFeeToOrder&quot;]):::observer
   sales_model_service_quote_submit_before([&quot;Magento event: &lt;br/&gt;&lt;code&gt;sales_model_service_quote_submit_before&lt;/code&gt;&quot;]):::event
+  sales_model_service_quote_submit_before --&gt; mollie_payment_observer_salesmodelservicequotesubmitbefore_copypaymentfeetoorder
   mollie_payment_observer_salesquotesavebefore_setpaymentfeedataonquote([&quot;Mollie\Payment\Observer\SalesQuoteSaveBefore\SetPaymentFeeDataOnQuote&quot;]):::observer
   sales_quote_save_before([&quot;Magento event: &lt;br/&gt;&lt;code&gt;sales_quote_save_before&lt;/code&gt;&quot;]):::event
+  sales_quote_save_before --&gt; mollie_payment_observer_salesquotesavebefore_setpaymentfeedataonquote
   mollie_payment_observer_salesmodelservicequotesubmitsuccess_attachpaymenttokentoorder([&quot;Mollie\Payment\Observer\SalesModelServiceQuoteSubmitSuccess\AttachPaymentTokenToOrder&quot;]):::observer
   sales_model_service_quote_submit_success([&quot;Magento event: &lt;br/&gt;&lt;code&gt;sales_model_service_quote_submit_success&lt;/code&gt;&quot;]):::event
+  sales_model_service_quote_submit_success --&gt; mollie_payment_observer_salesmodelservicequotesubmitsuccess_attachpaymenttokentoorder
   mollie_payment_observer_salesmodelservicequotesubmitsuccess_setcheckouturlforpaymentlink([&quot;Mollie\Payment\Observer\SalesModelServiceQuoteSubmitSuccess\SetCheckoutUrlForPaymentLink&quot;]):::observer
-  sales_model_service_quote_submit_success_2([&quot;Magento event: &lt;br/&gt;&lt;code&gt;sales_model_service_quote_submit_success&lt;/code&gt;&quot;]):::event
+  sales_model_service_quote_submit_success([&quot;Magento event: &lt;br/&gt;&lt;code&gt;sales_model_service_quote_submit_success&lt;/code&gt;&quot;]):::event
+  sales_model_service_quote_submit_success --&gt; mollie_payment_observer_salesmodelservicequotesubmitsuccess_setcheckouturlforpaymentlink
   mollie_payment_observer_molliestarttransaction_savependingorder([&quot;Mollie\Payment\Observer\MollieStartTransaction\SavePendingOrder&quot;]):::observer
   mollie_start_transaction([&quot;Magento event: &lt;br/&gt;&lt;code&gt;mollie_start_transaction&lt;/code&gt;&quot;]):::event
+  mollie_start_transaction --&gt; mollie_payment_observer_molliestarttransaction_savependingorder
   mollie_payment_observer_mollieprocesstransactionend_removecompletedordersfrompendingpaymenttable([&quot;Mollie\Payment\Observer\MollieProcessTransactionEnd\RemoveCompletedOrdersFromPendingPaymentTable&quot;]):::observer
   mollie_process_transaction_end([&quot;Magento event: &lt;br/&gt;&lt;code&gt;mollie_process_transaction_end&lt;/code&gt;&quot;]):::event
+  mollie_process_transaction_end --&gt; mollie_payment_observer_mollieprocesstransactionend_removecompletedordersfrompendingpaymenttable
   mollie_payment_observer_controlleractionpredispatchcheckoutindexindex_restorequoteofunsuccessfulpayment([&quot;Mollie\Payment\Observer\ControllerActionPredispatchCheckoutIndexIndex\RestoreQuoteOfUnsuccessfulPayment&quot;]):::observer
   controller_action_predispatch_checkout_index_index([&quot;Magento event: &lt;br/&gt;&lt;code&gt;controller_action_predispatch_checkout_index_index&lt;/code&gt;&quot;]):::event
+  controller_action_predispatch_checkout_index_index --&gt; mollie_payment_observer_controlleractionpredispatchcheckoutindexindex_restorequoteofunsuccessfulpayment
   mollie_payment_observer_salesorderplacebefore_removependingpaymentreminders([&quot;Mollie\Payment\Observer\SalesOrderPlaceBefore\RemovePendingPaymentReminders&quot;]):::observer
   sales_order_place_before([&quot;Magento event: &lt;br/&gt;&lt;code&gt;sales_order_place_before&lt;/code&gt;&quot;]):::event
+  sales_order_place_before --&gt; mollie_payment_observer_salesorderplacebefore_removependingpaymentreminders
   mollie_payment_observer_checkoutallowguest_forcecustomerloginwhensubscriptionitemincart([&quot;Mollie\Payment\Observer\CheckoutAllowGuest\ForceCustomerLoginWhenSubscriptionItemInCart&quot;]):::observer
   checkout_allow_guest([&quot;Magento event: &lt;br/&gt;&lt;code&gt;checkout_allow_guest&lt;/code&gt;&quot;]):::event
+  checkout_allow_guest --&gt; mollie_payment_observer_checkoutallowguest_forcecustomerloginwhensubscriptionitemincart
   mollie_payment_observer_checkoutsubmitallafter_starttransactionforinstantpurchaseorders([&quot;Mollie\Payment\Observer\CheckoutSubmitAllAfter\StartTransactionForInstantPurchaseOrders&quot;]):::observer
   checkout_submit_all_after([&quot;Magento event: &lt;br/&gt;&lt;code&gt;checkout_submit_all_after&lt;/code&gt;&quot;]):::event
+  checkout_submit_all_after --&gt; mollie_payment_observer_checkoutsubmitallafter_starttransactionforinstantpurchaseorders
   mollie_payment_observer_salesmodelservicequotesubmitsuccess_starttransactionforpointofsaleorders([&quot;Mollie\Payment\Observer\SalesModelServiceQuoteSubmitSuccess\StartTransactionForPointOfSaleOrders&quot;]):::observer
-  checkout_submit_all_after_2([&quot;Magento event: &lt;br/&gt;&lt;code&gt;checkout_submit_all_after&lt;/code&gt;&quot;]):::event
+  checkout_submit_all_after([&quot;Magento event: &lt;br/&gt;&lt;code&gt;checkout_submit_all_after&lt;/code&gt;&quot;]):::event
+  checkout_submit_all_after --&gt; mollie_payment_observer_salesmodelservicequotesubmitsuccess_starttransactionforpointofsaleorders
   mollie_payment_observer_salesquoteitemsetproduct_setsubscriptiondataonbuyrequest([&quot;Mollie\Payment\Observer\SalesQuoteItemSetProduct\SetSubscriptionDataOnBuyRequest&quot;]):::observer
   sales_quote_item_set_product([&quot;Magento event: &lt;br/&gt;&lt;code&gt;sales_quote_item_set_product&lt;/code&gt;&quot;]):::event
+  sales_quote_item_set_product --&gt; mollie_payment_observer_salesquoteitemsetproduct_setsubscriptiondataonbuyrequest
   mollie_payment_observer_shortcutbuttonscontainer_addapplepayshortcutbutton([&quot;Mollie\Payment\Observer\ShortcutButtonsContainer\AddApplePayShortcutButton&quot;]):::observer
   shortcut_buttons_container([&quot;Magento event: &lt;br/&gt;&lt;code&gt;shortcut_buttons_container&lt;/code&gt;&quot;]):::event
+  shortcut_buttons_container --&gt; mollie_payment_observer_shortcutbuttonscontainer_addapplepayshortcutbutton
   mollie_payment_observer_salesorderpaymentplaceend_setorderstatetopendingpayment([&quot;Mollie\Payment\Observer\SalesOrderPaymentPlaceEnd\SetOrderStateToPendingPayment&quot;]):::observer
   sales_order_payment_place_end([&quot;Magento event: &lt;br/&gt;&lt;code&gt;sales_order_payment_place_end&lt;/code&gt;&quot;]):::event
+  sales_order_payment_place_end --&gt; mollie_payment_observer_salesorderpaymentplaceend_setorderstatetopendingpayment
   mollie_payment_observer_salesorderinvoicepay_markvirtualitemsasshipped([&quot;Mollie\Payment\Observer\SalesOrderInvoicePay\MarkVirtualItemsAsShipped&quot;]):::observer
   sales_order_invoice_pay([&quot;Magento event: &lt;br/&gt;&lt;code&gt;sales_order_invoice_pay&lt;/code&gt;&quot;]):::event
+  sales_order_invoice_pay --&gt; mollie_payment_observer_salesorderinvoicepay_markvirtualitemsasshipped
   mollie_payment_observer_salesorderinvoiceregister_captureinvoice([&quot;Mollie\Payment\Observer\SalesOrderInvoiceRegister\CaptureInvoice&quot;]):::observer
   sales_order_invoice_register([&quot;Magento event: &lt;br/&gt;&lt;code&gt;sales_order_invoice_register&lt;/code&gt;&quot;]):::event
+  sales_order_invoice_register --&gt; mollie_payment_observer_salesorderinvoiceregister_captureinvoice
   mollie_payment_observer_salesquotepaymentimportdatabefore_clearissueronmethodchange([&quot;Mollie\Payment\Observer\SalesQuotePaymentImportDataBefore\ClearIssuerOnMethodChange&quot;]):::observer
   sales_quote_payment_import_data_before([&quot;Magento event: &lt;br/&gt;&lt;code&gt;sales_quote_payment_import_data_before&lt;/code&gt;&quot;]):::event
+  sales_quote_payment_import_data_before --&gt; mollie_payment_observer_salesquotepaymentimportdatabefore_clearissueronmethodchange
   mollie_payment_observer_adminhtmlsalesordercreateprocessitembefore_setpurchasetypeoncreateorderitem([&quot;Mollie\Payment\Observer\AdminhtmlSalesOrderCreateProcessItemBefore\SetPurchaseTypeOnCreateOrderItem&quot;]):::observer
   adminhtml_sales_order_create_process_item_before([&quot;Magento event: &lt;br/&gt;&lt;code&gt;adminhtml_sales_order_create_process_item_before&lt;/code&gt;&quot;]):::event
+  adminhtml_sales_order_create_process_item_before --&gt; mollie_payment_observer_adminhtmlsalesordercreateprocessitembefore_setpurchasetypeoncreateorderitem
   mollie_payment_observer_backendblockwidgetgridpreparegridbefore_addadditionalinformationtocollection([&quot;Mollie\Payment\Observer\BackendBlockWidgetGridPrepareGridBefore\AddAdditionalInformationToCollection&quot;]):::observer
   backend_block_widget_grid_prepare_grid_before([&quot;Magento event: &lt;br/&gt;&lt;code&gt;backend_block_widget_grid_prepare_grid_before&lt;/code&gt;&quot;]):::event
-  admin_system_config_changed_section_mollie_payment_methods-&gt;mollie_payment_observer_configobserver
-  order_cancel_after-&gt;mollie_payment_observer_ordercancelafter
-  sales_order_shipment_save_before-&gt;mollie_payment_observer_lockunlockorder
-  sales_order_shipment_save_after-&gt;mollie_payment_observer_lockunlockorder
-  sales_order_shipment_track_save_before-&gt;mollie_payment_observer_lockunlockorder
-  sales_order_shipment_track_save_after-&gt;mollie_payment_observer_lockunlockorder
-  sales_order_shipment_save_before_2-&gt;mollie_payment_observer_salesordershipmentsavebefore_createmollieshipment
-  sales_order_shipment_track_save_after_2-&gt;mollie_payment_observer_salesordershipmenttracksaveafter
-  sales_order_creditmemo_save_after-&gt;mollie_payment_observer_salesordercreditmemosaveafter
-  sales_model_service_quote_submit_before-&gt;mollie_payment_observer_salesmodelservicequotesubmitbefore_copypaymentfeetoorder
-  sales_quote_save_before-&gt;mollie_payment_observer_salesquotesavebefore_setpaymentfeedataonquote
-  sales_model_service_quote_submit_success-&gt;mollie_payment_observer_salesmodelservicequotesubmitsuccess_attachpaymenttokentoorder
-  sales_model_service_quote_submit_success_2-&gt;mollie_payment_observer_salesmodelservicequotesubmitsuccess_setcheckouturlforpaymentlink
-  mollie_start_transaction-&gt;mollie_payment_observer_molliestarttransaction_savependingorder
-  mollie_process_transaction_end-&gt;mollie_payment_observer_mollieprocesstransactionend_removecompletedordersfrompendingpaymenttable
-  controller_action_predispatch_checkout_index_index-&gt;mollie_payment_observer_controlleractionpredispatchcheckoutindexindex_restorequoteofunsuccessfulpayment
-  sales_order_place_before-&gt;mollie_payment_observer_salesorderplacebefore_removependingpaymentreminders
-  checkout_allow_guest-&gt;mollie_payment_observer_checkoutallowguest_forcecustomerloginwhensubscriptionitemincart
-  checkout_submit_all_after-&gt;mollie_payment_observer_checkoutsubmitallafter_starttransactionforinstantpurchaseorders
-  checkout_submit_all_after_2-&gt;mollie_payment_observer_salesmodelservicequotesubmitsuccess_starttransactionforpointofsaleorders
-  sales_quote_item_set_product-&gt;mollie_payment_observer_salesquoteitemsetproduct_setsubscriptiondataonbuyrequest
-  shortcut_buttons_container-&gt;mollie_payment_observer_shortcutbuttonscontainer_addapplepayshortcutbutton
-  sales_order_payment_place_end-&gt;mollie_payment_observer_salesorderpaymentplaceend_setorderstatetopendingpayment
-  sales_order_invoice_pay-&gt;mollie_payment_observer_salesorderinvoicepay_markvirtualitemsasshipped
-  sales_order_invoice_register-&gt;mollie_payment_observer_salesorderinvoiceregister_captureinvoice
-  sales_quote_payment_import_data_before-&gt;mollie_payment_observer_salesquotepaymentimportdatabefore_clearissueronmethodchange
-  adminhtml_sales_order_create_process_item_before-&gt;mollie_payment_observer_adminhtmlsalesordercreateprocessitembefore_setpurchasetypeoncreateorderitem
-  backend_block_widget_grid_prepare_grid_before-&gt;mollie_payment_observer_backendblockwidgetgridpreparegridbefore_addadditionalinformationtocollection
+  backend_block_widget_grid_prepare_grid_before --&gt; mollie_payment_observer_backendblockwidgetgridpreparegridbefore_addadditionalinformationtocollection
 classDef event fill:#eef6ff,stroke:#3b82f6,color:#111;
 classDef observer fill:#fef3c7,stroke:#f59e0b,color:#111;
 classDef api fill:#ecfdf5,stroke:#10b981,color:#111;
@@ -537,6 +558,7 @@ classDef api fill:#ecfdf5,stroke:#10b981,color:#111;
 <tr>
 <th>Observer class</th>
 <th>Events</th>
+<th>Services</th>
 <th>Mollie endpoints</th>
 <th>SDK calls</th>
 </tr>
@@ -544,151 +566,176 @@ classDef api fill:#ecfdf5,stroke:#10b981,color:#111;
 <tbody>
 <tr>
 <td><code>Mollie\Payment\Observer\AdminhtmlSalesOrderCreateProcessItemBefore\SetPurchaseTypeOnCreateOrderItem</code></td>
-<td><code>adminhtml_sales_order_create_process_item_before</code></td>
+<td>adminhtml_sales_order_create_process_item_before</td>
+<td><em>—</em></td>
 <td><em>—</em></td>
 <td><em>—</em></td>
 </tr>
 <tr>
 <td><code>Mollie\Payment\Observer\BackendBlockWidgetGridPrepareGridBefore\AddAdditionalInformationToCollection</code></td>
-<td><code>backend_block_widget_grid_prepare_grid_before</code></td>
+<td>backend_block_widget_grid_prepare_grid_before</td>
+<td><em>—</em></td>
 <td><em>—</em></td>
 <td><em>—</em></td>
 </tr>
 <tr>
 <td><code>Mollie\Payment\Observer\CheckoutAllowGuest\ForceCustomerLoginWhenSubscriptionItemInCart</code></td>
-<td><code>checkout_allow_guest</code></td>
+<td>checkout_allow_guest</td>
+<td><em>—</em></td>
 <td><em>—</em></td>
 <td><em>—</em></td>
 </tr>
 <tr>
 <td><code>Mollie\Payment\Observer\CheckoutSubmitAllAfter\StartTransactionForInstantPurchaseOrders</code></td>
-<td><code>checkout_submit_all_after</code></td>
+<td>checkout_submit_all_after</td>
+<td><em>—</em></td>
 <td><em>—</em></td>
 <td><em>—</em></td>
 </tr>
 <tr>
 <td><code>Mollie\Payment\Observer\ConfigObserver</code></td>
-<td><code>admin_system_config_changed_section_mollie_payment_methods</code></td>
+<td>admin_system_config_changed_section_mollie_payment_methods</td>
+<td><em>—</em></td>
 <td><em>—</em></td>
 <td><em>—</em></td>
 </tr>
 <tr>
 <td><code>Mollie\Payment\Observer\ControllerActionPredispatchCheckoutIndexIndex\RestoreQuoteOfUnsuccessfulPayment</code></td>
-<td><code>controller_action_predispatch_checkout_index_index</code></td>
+<td>controller_action_predispatch_checkout_index_index</td>
+<td><em>—</em></td>
 <td><em>—</em></td>
 <td><em>—</em></td>
 </tr>
 <tr>
 <td><code>Mollie\Payment\Observer\LockUnlockOrder</code></td>
-<td><code>sales_order_shipment_save_after</code><br/><code>sales_order_shipment_save_before</code><br/><code>sales_order_shipment_track_save_after</code><br/><code>sales_order_shipment_track_save_before</code></td>
+<td>sales_order_shipment_save_before<br/>sales_order_shipment_save_after<br/>sales_order_shipment_track_save_before<br/>sales_order_shipment_track_save_after</td>
+<td><em>—</em></td>
 <td><em>—</em></td>
 <td><em>—</em></td>
 </tr>
 <tr>
 <td><code>Mollie\Payment\Observer\MollieProcessTransactionEnd\RemoveCompletedOrdersFromPendingPaymentTable</code></td>
-<td><code>mollie_process_transaction_end</code></td>
+<td>mollie_process_transaction_end</td>
+<td><em>—</em></td>
 <td><em>—</em></td>
 <td><em>—</em></td>
 </tr>
 <tr>
 <td><code>Mollie\Payment\Observer\MollieStartTransaction\SavePendingOrder</code></td>
-<td><code>mollie_start_transaction</code></td>
+<td>mollie_start_transaction</td>
+<td><em>—</em></td>
 <td><em>—</em></td>
 <td><em>—</em></td>
 </tr>
 <tr>
 <td><code>Mollie\Payment\Observer\OrderCancelAfter</code></td>
-<td><code>order_cancel_after</code></td>
+<td>order_cancel_after</td>
+<td><em>—</em></td>
 <td><em>—</em></td>
 <td><em>—</em></td>
 </tr>
 <tr>
 <td><code>Mollie\Payment\Observer\SalesModelServiceQuoteSubmitBefore\CopyPaymentFeeToOrder</code></td>
-<td><code>sales_model_service_quote_submit_before</code></td>
+<td>sales_model_service_quote_submit_before</td>
+<td><em>—</em></td>
 <td><em>—</em></td>
 <td><em>—</em></td>
 </tr>
 <tr>
 <td><code>Mollie\Payment\Observer\SalesModelServiceQuoteSubmitSuccess\AttachPaymentTokenToOrder</code></td>
-<td><code>sales_model_service_quote_submit_success</code></td>
+<td>sales_model_service_quote_submit_success</td>
+<td><em>—</em></td>
 <td><em>—</em></td>
 <td><em>—</em></td>
 </tr>
 <tr>
 <td><code>Mollie\Payment\Observer\SalesModelServiceQuoteSubmitSuccess\SetCheckoutUrlForPaymentLink</code></td>
-<td><code>sales_model_service_quote_submit_success</code></td>
+<td>sales_model_service_quote_submit_success</td>
+<td><em>—</em></td>
 <td><em>—</em></td>
 <td><em>—</em></td>
 </tr>
 <tr>
 <td><code>Mollie\Payment\Observer\SalesModelServiceQuoteSubmitSuccess\StartTransactionForPointOfSaleOrders</code></td>
-<td><code>checkout_submit_all_after</code></td>
+<td>checkout_submit_all_after</td>
+<td><em>—</em></td>
 <td><em>—</em></td>
 <td><em>—</em></td>
 </tr>
 <tr>
 <td><code>Mollie\Payment\Observer\SalesOrderCreditmemoSaveAfter</code></td>
-<td><code>sales_order_creditmemo_save_after</code></td>
+<td>sales_order_creditmemo_save_after</td>
+<td><em>—</em></td>
 <td><em>—</em></td>
 <td><em>—</em></td>
 </tr>
 <tr>
 <td><code>Mollie\Payment\Observer\SalesOrderInvoicePay\MarkVirtualItemsAsShipped</code></td>
-<td><code>sales_order_invoice_pay</code></td>
+<td>sales_order_invoice_pay</td>
+<td><em>—</em></td>
 <td><em>—</em></td>
 <td><em>—</em></td>
 </tr>
 <tr>
 <td><code>Mollie\Payment\Observer\SalesOrderInvoiceRegister\CaptureInvoice</code></td>
-<td><code>sales_order_invoice_register</code></td>
+<td>sales_order_invoice_register</td>
+<td><em>—</em></td>
 <td><em>—</em></td>
 <td><em>—</em></td>
 </tr>
 <tr>
 <td><code>Mollie\Payment\Observer\SalesOrderPaymentPlaceEnd\SetOrderStateToPendingPayment</code></td>
-<td><code>sales_order_payment_place_end</code></td>
+<td>sales_order_payment_place_end</td>
+<td><em>—</em></td>
 <td><em>—</em></td>
 <td><em>—</em></td>
 </tr>
 <tr>
 <td><code>Mollie\Payment\Observer\SalesOrderPlaceBefore\RemovePendingPaymentReminders</code></td>
-<td><code>sales_order_place_before</code></td>
+<td>sales_order_place_before</td>
+<td><em>—</em></td>
 <td><em>—</em></td>
 <td><em>—</em></td>
 </tr>
 <tr>
 <td><code>Mollie\Payment\Observer\SalesOrderShipmentSaveBefore\CreateMollieShipment</code></td>
-<td><code>sales_order_shipment_save_before</code></td>
+<td>sales_order_shipment_save_before</td>
+<td><em>—</em></td>
 <td><em>—</em></td>
 <td><em>—</em></td>
 </tr>
 <tr>
 <td><code>Mollie\Payment\Observer\SalesOrderShipmentTrackSaveAfter</code></td>
-<td><code>sales_order_shipment_track_save_after</code></td>
+<td>sales_order_shipment_track_save_after</td>
+<td><em>—</em></td>
 <td><em>—</em></td>
 <td><em>—</em></td>
 </tr>
 <tr>
 <td><code>Mollie\Payment\Observer\SalesQuoteItemSetProduct\SetSubscriptionDataOnBuyRequest</code></td>
-<td><code>sales_quote_item_set_product</code></td>
+<td>sales_quote_item_set_product</td>
+<td><em>—</em></td>
 <td><em>—</em></td>
 <td><em>—</em></td>
 </tr>
 <tr>
 <td><code>Mollie\Payment\Observer\SalesQuotePaymentImportDataBefore\ClearIssuerOnMethodChange</code></td>
-<td><code>sales_quote_payment_import_data_before</code></td>
+<td>sales_quote_payment_import_data_before</td>
+<td><em>—</em></td>
 <td><em>—</em></td>
 <td><em>—</em></td>
 </tr>
 <tr>
 <td><code>Mollie\Payment\Observer\SalesQuoteSaveBefore\SetPaymentFeeDataOnQuote</code></td>
-<td><code>sales_quote_save_before</code></td>
+<td>sales_quote_save_before</td>
+<td><em>—</em></td>
 <td><em>—</em></td>
 <td><em>—</em></td>
 </tr>
 <tr>
 <td><code>Mollie\Payment\Observer\ShortcutButtonsContainer\AddApplePayShortcutButton</code></td>
-<td><code>shortcut_buttons_container</code></td>
+<td>shortcut_buttons_container</td>
+<td><em>—</em></td>
 <td><em>—</em></td>
 <td><em>—</em></td>
 </tr>
