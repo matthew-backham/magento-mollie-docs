@@ -1,15 +1,48 @@
 site_name: Magento 2 × Mollie (Auto Docs)
+site_description: >
+  Automatically generated technical and functional documentation for the Mollie Magento 2 plugin.
+  Includes live API mappings and checkout flow visualization.
+site_author: Matthew Backham
+
 theme:
   name: material
+  language: en
   features:
     - navigation.instant
     - navigation.sections
+    - content.code.annotate
+    - search.suggest
+    - search.highlight
+    - content.tabs.link
+    - toc.integrate
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: deep purple
+    - scheme: slate
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+      primary: indigo
+      accent: deep purple
+
 plugins:
   - search
+
 markdown_extensions:
   - admonition
   - toc:
       permalink: true
+  - pymdownx.superfences     # Enables ```mermaid``` diagrams
+  - pymdownx.details
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.tabbed
+  - pymdownx.emoji:
+      emoji_generator: !!python/name:pymdownx.emoji.to_svg
+  - attr_list
+
 nav:
   - Home: index.md
+  - Checkout Flow: checkout.md
 
