@@ -3,31 +3,30 @@
 declare(strict_types=1);
 
 /**
- * Magento × Mollie — Full Checkout Flow Generator (v3)
- *
- * Builds docs/checkout.md automatically with:
+ * Magento × Mollie — Full Checkout Flow Generator (v3.1)
+ * -------------------------------------------------------
+ * Generates docs/checkout.md with:
  *  - Magento events → Observers → Injected Services → Mollie API calls
  *  - Clickable GitHub source links
- *  - Coverage summary
- *  - Mermaid flow diagram
+ *  - Coverage summary + validation
  */
 
 function generateCheckoutDocs(string $moduleDir, string $outputDir): void
 {
-    $repoUrl = "https://github.com/mollie/magento2/blob/main/";
+    $repoUrl = "https://github.com/mollie/magento2/tree/main/module-payment/";
 
     if (!is_dir($moduleDir)) {
         fwrite(STDERR, "❌ Mollie module not found at $moduleDir\n");
-        return;
+        exit(1);
     }
     if (!is_dir($outputDir)) mkdir($outputDir, 0777, true);
 
     // -------------------------------------------------------------
-    // 1️⃣ Scan for API usage across all PHP files (deep scan)
+    // 1️⃣ Scan for API usage across all PHP files
     // -------------------------------------------------------------
     $apiUsage = [];
-    $httpRegex = '#/v\\d+/[\\w/:-]+#i';
-    $sdkRegex = '#->\\s*(payments|orders|refunds|shipments|captures)\\s*->\\s*(create|get|update|cancel|list|capture|refund)\\s*\\(#i';
+    $httpRegex = '#["\'`]?/v\\d+/[\\w/:-]+#i';
+    $sdkRegex = '#->\\s*(payments|orders|refunds|shipments|captures|customers|subscriptions)\\s*->\\s*(create|get|update|cancel|list|capture|refund)\\s*\\(#i';
     $rii = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($moduleDir));
 
     foreach ($rii as $file) {
@@ -39,8 +38,8 @@ function generateCheckoutDocs(string $moduleDir, string $outputDir): void
         if (!preg_match('/namespace\\s+([^;]+)/', $code, $ns)) continue;
         $namespace = trim($ns[1]);
         if (!preg_match('/class\\s+(\\w+)/', $code, $cls)) continue;
-
         $className = $namespace . '\\' . trim($cls[1]);
+
         $endpoints = [];
         $sdkCalls  = [];
 
@@ -52,10 +51,8 @@ function generateCheckoutDocs(string $moduleDir, string $outputDir): void
         }
 
         if ($endpoints || $sdkCalls) {
-            $lines = substr_count($code, "\n");
             $apiUsage[$className] = [
                 'file' => $path,
-                'lines' => $lines,
                 'endpoints' => array_keys($endpoints),
                 'sdk' => array_unique($sdkCalls),
             ];
@@ -110,13 +107,12 @@ function generateCheckoutDocs(string $moduleDir, string $outputDir): void
         $code = @file_get_contents($path);
         if (!$code) continue;
 
-        // Constructor-injected services
+        // Constructor-injected dependencies
         if (preg_match('/function\\s+__construct\\s*\\(([^)]*)\\)/', $code, $ctor)) {
             if (preg_match_all('/([A-Z][A-Za-z0-9_\\\\]+)\\s+\\$([A-Za-z0-9_]+)/', $ctor[1], $deps, PREG_SET_ORDER)) {
                 foreach ($deps as $d) {
                     $type = trim($d[1]);
                     $observerMap[$cls]['services'][] = $type;
-                    // If service uses Mollie API, link it
                     if (isset($apiUsage[$type])) {
                         $observerMap[$cls]['api'] = array_unique(array_merge(
                             $observerMap[$cls]['api'],
@@ -133,23 +129,31 @@ function generateCheckoutDocs(string $moduleDir, string $outputDir): void
     }
 
     // -------------------------------------------------------------
-    // 4️⃣ Coverage summary
+    // 4️⃣ Coverage summary + validation
     // -------------------------------------------------------------
     $totalEvents = count(array_unique(array_column($links, 'event')));
     $totalObservers = count($observerMap);
-    $totalApiCalls = array_reduce($apiUsage, fn($c, $x) => $c + count($x['endpoints']), 0);
-    $summary = "✓ **$totalEvents Magento events**\n" .
-               "✓ **$totalObservers observers documented**\n" .
-               "✓ **" . count($apiUsage) . " classes with Mollie API usage**\n" .
-               "✓ **$totalApiCalls unique API endpoints** detected\n";
+    $totalApiClasses = count($apiUsage);
+    $totalEndpoints = array_reduce($apiUsage, fn($c, $x) => $c + count($x['endpoints']), 0);
+
+    echo "📊 Coverage: $totalEvents events, $totalObservers observers, $totalApiClasses API classes, $totalEndpoints endpoints\n";
+
+    if ($totalEndpoints === 0) {
+        fwrite(STDERR, "❌ No API endpoints detected — build aborted.\n");
+        exit(1);
+    }
 
     // -------------------------------------------------------------
-    // 5️⃣ Build Markdown output
+    // 5️⃣ Build Markdown
     // -------------------------------------------------------------
     $md  = "# Magento × Mollie — Checkout Flow (Deep Analysis)\n\n";
     $md .= "_Generated automatically from the Mollie Magento 2 module source._\n\n";
-    $md .= "## Coverage Summary\n\n" . $summary . "\n";
-    $md .= "It maps **Magento events → Mollie observers → Services → Mollie API calls** with clickable source links.\n\n";
+    $md .= "## Coverage Summary\n\n";
+    $md .= "✓ **$totalEvents Magento events**\n";
+    $md .= "✓ **$totalObservers observers documented**\n";
+    $md .= "✓ **$totalApiClasses classes using Mollie API**\n";
+    $md .= "✓ **$totalEndpoints unique API endpoints detected**\n\n";
+    $md .= "It maps **Magento events → Observers → Services → Mollie API calls**.\n\n";
 
     // Table of events
     $md .= "## Checkout-related events\n\n";
@@ -163,7 +167,7 @@ function generateCheckoutDocs(string $moduleDir, string $outputDir): void
         $md .= "| `$ev` | " . implode('<br/>', array_map('htmlspecialchars', $classes)) . " |\n";
     }
 
-    // Diagram
+    // Mermaid diagram
     $md .= "\n## Full event → observer → API map\n\n";
     $md .= "```mermaid\nflowchart TD\n";
     $id = fn($s) => preg_replace('/[^a-zA-Z0-9]+/', '_', strtolower($s));
@@ -186,13 +190,13 @@ function generateCheckoutDocs(string $moduleDir, string $outputDir): void
     $md .= "classDef api fill:#ecfdf5,stroke:#10b981,color:#111;\n";
     $md .= "```\n\n";
 
-    // Observer details
+    // Observer details table
     $md .= "## Observer details\n\n";
     $md .= "| Observer class | Events | Services | Mollie endpoints | SDK calls |\n|---|---|---|---|---|\n";
     ksort($observerMap);
     foreach ($observerMap as $cls => $info) {
         $filePath = $moduleDir . '/' . str_replace('\\', '/', $cls) . '.php';
-        $fileUrl = $repoUrl . str_replace($moduleDir . '/', '', $filePath);
+        $fileUrl = $repoUrl . str_replace($moduleDir . '/../vendor/mollie/module-payment/', '', $filePath);
         $md .= "| [`$cls`]($fileUrl) | "
              . implode('<br/>', $info['events'] ?: ['_—_']) . " | "
              . implode('<br/>', $info['services'] ?: ['_—_']) . " | "
