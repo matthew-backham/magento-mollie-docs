@@ -1,0 +1,52 @@
+name: Build & Deploy Docs
+
+on:
+  push:
+    branches: [ main ]
+  schedule:
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout this repo
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          tools: composer
+
+      - name: Install generator deps
+        working-directory: generator
+        run: composer install --no-dev --prefer-dist
+
+      - name: Clone Mollie Magento 2
+        run: |
+          mkdir -p vendor/mollie
+          git clone https://github.com/mollie/magento2.git vendor/mollie/module-payment
+
+      - name: Generate docs
+        run: php generator/generate-docs.php
+
+      - name: Setup Python & MkDocs
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+      - name: Install MkDocs Material
+        run: pip install mkdocs mkdocs-material
+
+      - name: Build site
+        run: mkdocs build
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: ./site
+

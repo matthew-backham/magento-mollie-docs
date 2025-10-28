@@ -1,0 +1,15 @@
+site_name: Magento 2 × Mollie (Auto Docs)
+theme:
+  name: material
+  features:
+    - navigation.instant
+    - navigation.sections
+plugins:
+  - search
+markdown_extensions:
+  - admonition
+  - toc:
+      permalink: true
+nav:
+  - Home: index.md
+
