@@ -393,9 +393,9 @@
 <h1 id="magento-mollie-checkout-flow-deep-analysis">Magento × Mollie — Checkout Flow (Deep Analysis)<a class="headerlink" href="#magento-mollie-checkout-flow-deep-analysis" title="Permanent link">&para;</a></h1>
 <p><em>Generated automatically from the Mollie Magento 2 module source.</em></p>
 <h2 id="coverage-summary">Coverage Summary<a class="headerlink" href="#coverage-summary" title="Permanent link">&para;</a></h2>
-<p>✓ <strong>24 Magento events</strong>
-✓ <strong>25 observers documented</strong>
-✓ <strong>23 classes using Mollie API</strong>
+<p>✓ <strong>25 Magento events</strong>
+✓ <strong>26 observers documented</strong>
+✓ <strong>24 classes using Mollie API</strong>
 ✓ <strong>0 unique API endpoints detected</strong></p>
 <p>It maps <strong>Magento events → Observers → Services → Mollie API calls</strong>.</p>
 <h2 id="checkout-related-events">Checkout-related events<a class="headerlink" href="#checkout-related-events" title="Permanent link">&para;</a></h2>
@@ -414,6 +414,10 @@
 <tr>
 <td><code>adminhtml_sales_order_create_process_item_before</code></td>
 <td>Mollie\Payment\Observer\AdminhtmlSalesOrderCreateProcessItemBefore\SetPurchaseTypeOnCreateOrderItem</td>
+</tr>
+<tr>
+<td><code>adminhtml_sales_order_creditmemo_register_before</code></td>
+<td>Mollie\Payment\Observer\AdminhtmlSalesOrderCreditmemoRegisterBefore\DoNotRefundGiftcard</td>
 </tr>
 <tr>
 <td><code>backend_block_widget_grid_prepare_grid_before</code></td>
@@ -528,6 +532,9 @@
   mollie_payment_observer_salesordershipmenttracksaveafter([&quot;Mollie\Payment\Observer\SalesOrderShipmentTrackSaveAfter&quot;]):::observer
   sales_order_shipment_track_save_after([&quot;Magento event:&lt;br/&gt;&lt;code&gt;sales_order_shipment_track_save_after&lt;/code&gt;&quot;]):::event
   sales_order_shipment_track_save_after --&gt; mollie_payment_observer_salesordershipmenttracksaveafter
+  mollie_payment_observer_adminhtmlsalesordercreditmemoregisterbefore_donotrefundgiftcard([&quot;Mollie\Payment\Observer\AdminhtmlSalesOrderCreditmemoRegisterBefore\DoNotRefundGiftcard&quot;]):::observer
+  adminhtml_sales_order_creditmemo_register_before([&quot;Magento event:&lt;br/&gt;&lt;code&gt;adminhtml_sales_order_creditmemo_register_before&lt;/code&gt;&quot;]):::event
+  adminhtml_sales_order_creditmemo_register_before --&gt; mollie_payment_observer_adminhtmlsalesordercreditmemoregisterbefore_donotrefundgiftcard
   mollie_payment_observer_salesordercreditmemosaveafter([&quot;Mollie\Payment\Observer\SalesOrderCreditmemoSaveAfter&quot;]):::observer
   sales_order_creditmemo_save_after([&quot;Magento event:&lt;br/&gt;&lt;code&gt;sales_order_creditmemo_save_after&lt;/code&gt;&quot;]):::event
   sales_order_creditmemo_save_after --&gt; mollie_payment_observer_salesordercreditmemosaveafter
@@ -607,6 +614,13 @@ classDef api fill:#ecfdf5,stroke:#10b981,color:#111;
 <tr>
 <td><a href="https://github.com/mollie/magento2/tree/master/src/Magento/Payment/Mollie/Payment/Observer/AdminhtmlSalesOrderCreateProcessItemBefore/SetPurchaseTypeOnCreateOrderItem.php"><code>Mollie\Payment\Observer\AdminhtmlSalesOrderCreateProcessItemBefore\SetPurchaseTypeOnCreateOrderItem</code></a></td>
 <td>adminhtml_sales_order_create_process_item_before</td>
+<td><em>—</em></td>
+<td><em>—</em></td>
+<td><em>—</em></td>
+</tr>
+<tr>
+<td><a href="https://github.com/mollie/magento2/tree/master/src/Magento/Payment/Mollie/Payment/Observer/AdminhtmlSalesOrderCreditmemoRegisterBefore/DoNotRefundGiftcard.php"><code>Mollie\Payment\Observer\AdminhtmlSalesOrderCreditmemoRegisterBefore\DoNotRefundGiftcard</code></a></td>
+<td>adminhtml_sales_order_creditmemo_register_before</td>
 <td><em>—</em></td>
 <td><em>—</em></td>
 <td><em>—</em></td>
