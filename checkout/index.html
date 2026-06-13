@@ -393,8 +393,8 @@
 <h1 id="magento-mollie-checkout-flow-deep-analysis">Magento × Mollie — Checkout Flow (Deep Analysis)<a class="headerlink" href="#magento-mollie-checkout-flow-deep-analysis" title="Permanent link">&para;</a></h1>
 <p><em>Generated automatically from the Mollie Magento 2 module source.</em></p>
 <h2 id="coverage-summary">Coverage Summary<a class="headerlink" href="#coverage-summary" title="Permanent link">&para;</a></h2>
-<p>✓ <strong>22 Magento events</strong>
-✓ <strong>25 observers documented</strong>
+<p>✓ <strong>23 Magento events</strong>
+✓ <strong>26 observers documented</strong>
 ✓ <strong>28 classes using Mollie API</strong>
 ✓ <strong>0 unique API endpoints detected</strong></p>
 <p>It maps <strong>Magento events → Observers → Services → Mollie API calls</strong>.</p>
@@ -430,6 +430,10 @@
 <tr>
 <td><code>controller_action_predispatch_checkout_index_index</code></td>
 <td>Mollie\Payment\Observer\ControllerActionPredispatchCheckoutIndexIndex\RestoreQuoteOfUnsuccessfulPayment</td>
+</tr>
+<tr>
+<td><code>layout_load_before</code></td>
+<td>Mollie\Payment\Observer\LayoutLoadBefore\AddExpressComponentsLayoutHandle</td>
 </tr>
 <tr>
 <td><code>mollie_checkout_success_redirect</code></td>
@@ -499,6 +503,9 @@
 </table>
 <h2 id="full-event-observer-api-map">Full event → observer → API map<a class="headerlink" href="#full-event-observer-api-map" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code>flowchart TD
+  mollie_payment_observer_layoutloadbefore_addexpresscomponentslayouthandle([&quot;Mollie\Payment\Observer\LayoutLoadBefore\AddExpressComponentsLayoutHandle&quot;]):::observer
+  layout_load_before([&quot;Magento event:&lt;br/&gt;&lt;code&gt;layout_load_before&lt;/code&gt;&quot;]):::event
+  layout_load_before --&gt; mollie_payment_observer_layoutloadbefore_addexpresscomponentslayouthandle
   mollie_payment_observer_configobserver([&quot;Mollie\Payment\Observer\ConfigObserver&quot;]):::observer
   admin_system_config_changed_section_mollie_payment_methods([&quot;Magento event:&lt;br/&gt;&lt;code&gt;admin_system_config_changed_section_mollie_payment_methods&lt;/code&gt;&quot;]):::event
   admin_system_config_changed_section_mollie_payment_methods --&gt; mollie_payment_observer_configobserver
@@ -639,6 +646,13 @@ classDef api fill:#ecfdf5,stroke:#10b981,color:#111;
 <tr>
 <td><a href="https://github.com/mollie/magento2/tree/master/src/Magento/Payment/Mollie/Payment/Observer/ControllerActionPredispatchCheckoutIndexIndex/RestoreQuoteOfUnsuccessfulPayment.php"><code>Mollie\Payment\Observer\ControllerActionPredispatchCheckoutIndexIndex\RestoreQuoteOfUnsuccessfulPayment</code></a></td>
 <td>controller_action_predispatch_checkout_index_index</td>
+<td><em>—</em></td>
+<td><em>—</em></td>
+<td><em>—</em></td>
+</tr>
+<tr>
+<td><a href="https://github.com/mollie/magento2/tree/master/src/Magento/Payment/Mollie/Payment/Observer/LayoutLoadBefore/AddExpressComponentsLayoutHandle.php"><code>Mollie\Payment\Observer\LayoutLoadBefore\AddExpressComponentsLayoutHandle</code></a></td>
+<td>layout_load_before</td>
 <td><em>—</em></td>
 <td><em>—</em></td>
 <td><em>—</em></td>
