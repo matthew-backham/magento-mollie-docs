@@ -393,7 +393,7 @@
 <h1 id="magento-mollie-checkout-flow-deep-analysis">Magento × Mollie — Checkout Flow (Deep Analysis)<a class="headerlink" href="#magento-mollie-checkout-flow-deep-analysis" title="Permanent link">&para;</a></h1>
 <p><em>Generated automatically from the Mollie Magento 2 module source.</em></p>
 <h2 id="coverage-summary">Coverage Summary<a class="headerlink" href="#coverage-summary" title="Permanent link">&para;</a></h2>
-<p>✓ <strong>23 Magento events</strong>
+<p>✓ <strong>24 Magento events</strong>
 ✓ <strong>26 observers documented</strong>
 ✓ <strong>28 classes using Mollie API</strong>
 ✓ <strong>0 unique API endpoints detected</strong></p>
@@ -478,6 +478,10 @@
 <tr>
 <td><code>sales_order_shipment_save_before</code></td>
 <td>Mollie\Payment\Observer\LockUnlockOrder<br/>Mollie\Payment\Observer\SalesOrderShipmentSaveBefore\CaptureShipment</td>
+</tr>
+<tr>
+<td><code>sales_order_shipment_track_save_after</code></td>
+<td>Mollie\Payment\Observer\LockUnlockOrder</td>
 </tr>
 <tr>
 <td><code>sales_order_shipment_track_save_before</code></td>
@@ -579,6 +583,8 @@
   sales_order_shipment_save_after --&gt; mollie_payment_observer_lockunlockorder
   sales_order_shipment_track_save_before([&quot;Magento event:&lt;br/&gt;&lt;code&gt;sales_order_shipment_track_save_before&lt;/code&gt;&quot;]):::event
   sales_order_shipment_track_save_before --&gt; mollie_payment_observer_lockunlockorder
+  sales_order_shipment_track_save_after([&quot;Magento event:&lt;br/&gt;&lt;code&gt;sales_order_shipment_track_save_after&lt;/code&gt;&quot;]):::event
+  sales_order_shipment_track_save_after --&gt; mollie_payment_observer_lockunlockorder
   mollie_payment_observer_salesordershipmentsavebefore_captureshipment([&quot;Mollie\Payment\Observer\SalesOrderShipmentSaveBefore\CaptureShipment&quot;]):::observer
   sales_order_shipment_save_before([&quot;Magento event:&lt;br/&gt;&lt;code&gt;sales_order_shipment_save_before&lt;/code&gt;&quot;]):::event
   sales_order_shipment_save_before --&gt; mollie_payment_observer_salesordershipmentsavebefore_captureshipment
@@ -659,7 +665,7 @@ classDef api fill:#ecfdf5,stroke:#10b981,color:#111;
 </tr>
 <tr>
 <td><a href="https://github.com/mollie/magento2/tree/master/src/Magento/Payment/Mollie/Payment/Observer/LockUnlockOrder.php"><code>Mollie\Payment\Observer\LockUnlockOrder</code></a></td>
-<td>sales_order_shipment_save_before<br/>sales_order_shipment_save_after<br/>sales_order_shipment_track_save_before</td>
+<td>sales_order_shipment_save_before<br/>sales_order_shipment_save_after<br/>sales_order_shipment_track_save_before<br/>sales_order_shipment_track_save_after</td>
 <td><em>—</em></td>
 <td><em>—</em></td>
 <td><em>—</em></td>
