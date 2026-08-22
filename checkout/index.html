@@ -393,8 +393,8 @@
 <h1 id="magento-mollie-checkout-flow-deep-analysis">Magento × Mollie — Checkout Flow (Deep Analysis)<a class="headerlink" href="#magento-mollie-checkout-flow-deep-analysis" title="Permanent link">&para;</a></h1>
 <p><em>Generated automatically from the Mollie Magento 2 module source.</em></p>
 <h2 id="coverage-summary">Coverage Summary<a class="headerlink" href="#coverage-summary" title="Permanent link">&para;</a></h2>
-<p>✓ <strong>24 Magento events</strong>
-✓ <strong>26 observers documented</strong>
+<p>✓ <strong>21 Magento events</strong>
+✓ <strong>24 observers documented</strong>
 ✓ <strong>29 classes using Mollie API</strong>
 ✓ <strong>0 unique API endpoints detected</strong></p>
 <p>It maps <strong>Magento events → Observers → Services → Mollie API calls</strong>.</p>
@@ -425,7 +425,7 @@
 </tr>
 <tr>
 <td><code>checkout_submit_all_after</code></td>
-<td>Mollie\Payment\Observer\CheckoutSubmitAllAfter\StartTransactionForInstantPurchaseOrders<br/>Mollie\Payment\Observer\SalesModelServiceQuoteSubmitSuccess\StartTransactionForPointOfSaleOrders<br/>Mollie\Payment\Observer\CheckoutSubmitAllAfter\SaveTrackingCookies</td>
+<td>Mollie\Payment\Observer\SalesModelServiceQuoteSubmitSuccess\StartTransactionForPointOfSaleOrders<br/>Mollie\Payment\Observer\CheckoutSubmitAllAfter\SaveTrackingCookies</td>
 </tr>
 <tr>
 <td><code>controller_action_predispatch_checkout_index_index</code></td>
@@ -472,20 +472,8 @@
 <td>Mollie\Payment\Observer\SalesOrderPlaceBefore\RemovePendingPaymentReminders</td>
 </tr>
 <tr>
-<td><code>sales_order_shipment_save_after</code></td>
-<td>Mollie\Payment\Observer\LockUnlockOrder</td>
-</tr>
-<tr>
 <td><code>sales_order_shipment_save_before</code></td>
-<td>Mollie\Payment\Observer\LockUnlockOrder<br/>Mollie\Payment\Observer\SalesOrderShipmentSaveBefore\CaptureShipment</td>
-</tr>
-<tr>
-<td><code>sales_order_shipment_track_save_after</code></td>
-<td>Mollie\Payment\Observer\LockUnlockOrder</td>
-</tr>
-<tr>
-<td><code>sales_order_shipment_track_save_before</code></td>
-<td>Mollie\Payment\Observer\LockUnlockOrder</td>
+<td>Mollie\Payment\Observer\SalesOrderShipmentSaveBefore\CaptureShipment</td>
 </tr>
 <tr>
 <td><code>sales_quote_item_set_product</code></td>
@@ -543,9 +531,6 @@
   mollie_payment_observer_checkoutallowguest_forcecustomerloginwhensubscriptionitemincart(["Mollie\Payment\Observer\CheckoutAllowGuest\ForceCustomerLoginWhenSubscriptionItemInCart"]):::observer
   checkout_allow_guest(["Magento event:&lt;br/&gt;&lt;code&gt;checkout_allow_guest&lt;/code&gt;"]):::event
   checkout_allow_guest --&gt; mollie_payment_observer_checkoutallowguest_forcecustomerloginwhensubscriptionitemincart
-  mollie_payment_observer_checkoutsubmitallafter_starttransactionforinstantpurchaseorders(["Mollie\Payment\Observer\CheckoutSubmitAllAfter\StartTransactionForInstantPurchaseOrders"]):::observer
-  checkout_submit_all_after(["Magento event:&lt;br/&gt;&lt;code&gt;checkout_submit_all_after&lt;/code&gt;"]):::event
-  checkout_submit_all_after --&gt; mollie_payment_observer_checkoutsubmitallafter_starttransactionforinstantpurchaseorders
   mollie_payment_observer_salesmodelservicequotesubmitsuccess_starttransactionforpointofsaleorders(["Mollie\Payment\Observer\SalesModelServiceQuoteSubmitSuccess\StartTransactionForPointOfSaleOrders"]):::observer
   checkout_submit_all_after(["Magento event:&lt;br/&gt;&lt;code&gt;checkout_submit_all_after&lt;/code&gt;"]):::event
   checkout_submit_all_after --&gt; mollie_payment_observer_salesmodelservicequotesubmitsuccess_starttransactionforpointofsaleorders
@@ -576,15 +561,6 @@
   mollie_payment_observer_backendblockwidgetgridpreparegridbefore_addadditionalinformationtocollection(["Mollie\Payment\Observer\BackendBlockWidgetGridPrepareGridBefore\AddAdditionalInformationToCollection"]):::observer
   backend_block_widget_grid_prepare_grid_before(["Magento event:&lt;br/&gt;&lt;code&gt;backend_block_widget_grid_prepare_grid_before&lt;/code&gt;"]):::event
   backend_block_widget_grid_prepare_grid_before --&gt; mollie_payment_observer_backendblockwidgetgridpreparegridbefore_addadditionalinformationtocollection
-  mollie_payment_observer_lockunlockorder(["Mollie\Payment\Observer\LockUnlockOrder"]):::observer
-  sales_order_shipment_save_before(["Magento event:&lt;br/&gt;&lt;code&gt;sales_order_shipment_save_before&lt;/code&gt;"]):::event
-  sales_order_shipment_save_before --&gt; mollie_payment_observer_lockunlockorder
-  sales_order_shipment_save_after(["Magento event:&lt;br/&gt;&lt;code&gt;sales_order_shipment_save_after&lt;/code&gt;"]):::event
-  sales_order_shipment_save_after --&gt; mollie_payment_observer_lockunlockorder
-  sales_order_shipment_track_save_before(["Magento event:&lt;br/&gt;&lt;code&gt;sales_order_shipment_track_save_before&lt;/code&gt;"]):::event
-  sales_order_shipment_track_save_before --&gt; mollie_payment_observer_lockunlockorder
-  sales_order_shipment_track_save_after(["Magento event:&lt;br/&gt;&lt;code&gt;sales_order_shipment_track_save_after&lt;/code&gt;"]):::event
-  sales_order_shipment_track_save_after --&gt; mollie_payment_observer_lockunlockorder
   mollie_payment_observer_salesordershipmentsavebefore_captureshipment(["Mollie\Payment\Observer\SalesOrderShipmentSaveBefore\CaptureShipment"]):::observer
   sales_order_shipment_save_before(["Magento event:&lt;br/&gt;&lt;code&gt;sales_order_shipment_save_before&lt;/code&gt;"]):::event
   sales_order_shipment_save_before --&gt; mollie_payment_observer_salesordershipmentsavebefore_captureshipment
@@ -636,13 +612,6 @@ classDef api fill:#ecfdf5,stroke:#10b981,color:#111;
 <td><em>—</em></td>
 </tr>
 <tr>
-<td><a href="https://github.com/mollie/magento2/tree/master/src/Magento/Payment/Mollie/Payment/Observer/CheckoutSubmitAllAfter/StartTransactionForInstantPurchaseOrders.php"><code>Mollie\Payment\Observer\CheckoutSubmitAllAfter\StartTransactionForInstantPurchaseOrders</code></a></td>
-<td>checkout_submit_all_after</td>
-<td><em>—</em></td>
-<td><em>—</em></td>
-<td><em>—</em></td>
-</tr>
-<tr>
 <td><a href="https://github.com/mollie/magento2/tree/master/src/Magento/Payment/Mollie/Payment/Observer/ConfigObserver.php"><code>Mollie\Payment\Observer\ConfigObserver</code></a></td>
 <td>admin_system_config_changed_section_mollie_payment_methods</td>
 <td><em>—</em></td>
@@ -659,13 +628,6 @@ classDef api fill:#ecfdf5,stroke:#10b981,color:#111;
 <tr>
 <td><a href="https://github.com/mollie/magento2/tree/master/src/Magento/Payment/Mollie/Payment/Observer/LayoutLoadBefore/AddExpressComponentsLayoutHandle.php"><code>Mollie\Payment\Observer\LayoutLoadBefore\AddExpressComponentsLayoutHandle</code></a></td>
 <td>layout_load_before</td>
-<td><em>—</em></td>
-<td><em>—</em></td>
-<td><em>—</em></td>
-</tr>
-<tr>
-<td><a href="https://github.com/mollie/magento2/tree/master/src/Magento/Payment/Mollie/Payment/Observer/LockUnlockOrder.php"><code>Mollie\Payment\Observer\LockUnlockOrder</code></a></td>
-<td>sales_order_shipment_save_before<br/>sales_order_shipment_save_after<br/>sales_order_shipment_track_save_before<br/>sales_order_shipment_track_save_after</td>
 <td><em>—</em></td>
 <td><em>—</em></td>
 <td><em>—</em></td>
