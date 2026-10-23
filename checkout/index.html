@@ -495,9 +495,6 @@
 </table>
 <h2 id="full-event-observer-api-map">Full event → observer → API map<a class="headerlink" href="#full-event-observer-api-map" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code>flowchart TD
-  mollie_payment_observer_layoutloadbefore_addexpresscomponentslayouthandle(["Mollie\Payment\Observer\LayoutLoadBefore\AddExpressComponentsLayoutHandle"]):::observer
-  layout_load_before(["Magento event:&lt;br/&gt;&lt;code&gt;layout_load_before&lt;/code&gt;"]):::event
-  layout_load_before --&gt; mollie_payment_observer_layoutloadbefore_addexpresscomponentslayouthandle
   mollie_payment_observer_configobserver(["Mollie\Payment\Observer\ConfigObserver"]):::observer
   admin_system_config_changed_section_mollie_payment_methods(["Magento event:&lt;br/&gt;&lt;code&gt;admin_system_config_changed_section_mollie_payment_methods&lt;/code&gt;"]):::event
   admin_system_config_changed_section_mollie_payment_methods --&gt; mollie_payment_observer_configobserver
@@ -567,6 +564,9 @@
   mollie_payment_observer_ordercancelafter_releaseauthorization(["Mollie\Payment\Observer\OrderCancelAfter\ReleaseAuthorization"]):::observer
   order_cancel_after(["Magento event:&lt;br/&gt;&lt;code&gt;order_cancel_after&lt;/code&gt;"]):::event
   order_cancel_after --&gt; mollie_payment_observer_ordercancelafter_releaseauthorization
+  mollie_payment_observer_layoutloadbefore_addexpresscomponentslayouthandle(["Mollie\Payment\Observer\LayoutLoadBefore\AddExpressComponentsLayoutHandle"]):::observer
+  layout_load_before(["Magento event:&lt;br/&gt;&lt;code&gt;layout_load_before&lt;/code&gt;"]):::event
+  layout_load_before --&gt; mollie_payment_observer_layoutloadbefore_addexpresscomponentslayouthandle
 classDef event fill:#eef6ff,stroke:#3b82f6,color:#111;
 classDef observer fill:#fef3c7,stroke:#f59e0b,color:#111;
 classDef api fill:#ecfdf5,stroke:#10b981,color:#111;
